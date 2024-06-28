@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback, useState } from "react";
 import ReactPlayer from "react-player";
 import peer from "../service/peer";
+import { useSpring, animated } from "react-spring";
 import { useSocket } from "../context/SocketProvider";
 
 const RoomPage = () => {
@@ -109,37 +110,35 @@ const RoomPage = () => {
     handleNegoNeedFinal,
   ]);
 
+  const fadeInProps = useSpring({ opacity:1, from: { opacity:0}, delay: 200});
+
   return (
-    <div>
-      <h1>Room Page</h1>
-      <h4>{remoteSocketId ? "Connected" : "No one in room"}</h4>
-      {myStream && <button onClick={sendStreams}>Send Stream</button>}
-      {remoteSocketId && <button onClick={handleCallUser}>CALL</button>}
+    <animated.div style={fadeInProps} className="flex flex-col items-center justify-center p-8 bg-gray-100 rounded-lg shadow-md max-w-lg mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Room Page</h1>
+      <h4 className="text-lg mb-4">{remoteSocketId ? "Connected": "No one in Room"}</h4>
+      {myStream && (
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 hover:bg-blue-700 transition duration-300" onClick={sendStreams}>
+          Send Stream
+        </button>
+      )}
+      {remoteSocketId && (
+        <button className="bg-green-500 text-white px-4 py-2 rounded-md mb-4 hover:bg-green-700 transition duration-300" onClick={handleCallUser}>
+          Call
+        </button>
+      )}
       {myStream && (
         <>
-          <h1>My Stream</h1>
-          <ReactPlayer
-            playing
-            muted
-            height="100px"
-            width="200px"
-            url={myStream}
-          />
+          <h1 className="text-xl font-semibold mb-2">My Stream</h1>
+          <ReactPlayer playing muted height="100px" width="200px" url={myStream} className="mb-4"/>
         </>
       )}
       {remoteStream && (
         <>
-          <h1>Remote Stream</h1>
-          <ReactPlayer
-            playing
-            muted
-            height="100px"
-            width="200px"
-            url={remoteStream}
-          />
+          <h1 className="text-xl font-semibold mb-2">Remote Stream</h1>
+          <ReactPlayer playing muted height="100px" width="200px" url={remoteStream} className="mb-4"/>
         </>
       )}
-    </div>
+    </animated.div>
   );
 };
 
